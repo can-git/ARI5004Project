@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib.colors import Normalize
-import seaborn as sn
+import seaborn as sns
 import os
+import numpy as np
 
 
 class Utils_Plot:
@@ -11,7 +13,7 @@ class Utils_Plot:
             os.mkdir("Visualization")
 
     def plotConfusionMatrix(self, cm):
-        sn.heatmap(cm, annot=True, fmt=".0f")
+        sns.heatmap(cm, annot=True, fmt=".0f")
         plt.xlabel('Predicted label')
         plt.ylabel('True label')
         plt.title(self.plot_title)
@@ -44,11 +46,37 @@ class Utils_Plot:
         plt.ylabel('Score')
         plt.show()
 
-    def plotClassesDistribution(self, data):
-
+    def plotSidesDistribution(self, data):
         class_counts = data['side'].value_counts()
+        class_counts2 = data['classes'].value_counts()
+        # class_counts.plot(kind='bar')
+        # class_counts2.plot(kind='bar')
+        # plt.ylabel('Count')
+        # plt.title(self.plot_title)
+        # plt.savefig("Visualization/distribution.png")
+        # plt.close()
+
+        sns.set_theme(style="ticks")
+
+        f, ax = plt.subplots(figsize=(7, 5))
+        sns.despine(f)
+
+        sns.histplot(data, x="classes", hue="side", multiple="stack", edgecolor=".3", linewidth=.5, )
+        plt.xlabel("Classes")
+        plt.show()
+
+    def plotClassesDistribution(self, data):
+        class_counts = data['classes'].value_counts()
         class_counts.plot(kind='bar')
         plt.ylabel('Count')
         plt.title(self.plot_title)
-        plt.savefig("Visualization/distribution.png")
+        plt.savefig("Visualization/class_distribution.png")
+        plt.close()
+
+    def plotMalignantDistribution(self, data):
+        class_counts = data['malignant'].value_counts()
+        class_counts.plot(kind='bar')
+        plt.ylabel('Count')
+        plt.title(self.plot_title)
+        plt.savefig("Visualization/malignant_distribution.png")
         plt.close()

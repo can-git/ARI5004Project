@@ -6,7 +6,7 @@ from torchvision import models
 import Properties as p
 from Net import Net
 import os
-from Preprocess import Preprocess
+from Preprocess2 import Preprocess2
 from tqdm import tqdm
 from ImageDataset import ImageDataset
 from Evaluation import Evaluation
@@ -18,14 +18,14 @@ class Main:
     def __init__(self, version):
         self.version = version
 
-        preprocess = Preprocess()
-        preprocess.show()
+        preprocess = Preprocess2()
+        # preprocess.show()
         df_train, df_val, df_test = preprocess.getItem()
 
         # model = Net()
         model = getattr(models, version)()
 
-        num_classes = 8
+        num_classes = 5
         in_features = model.fc.in_features
         model.fc = nn.Linear(in_features, num_classes)
 
@@ -39,13 +39,6 @@ class Main:
 
     def train(self, model, train_data, val_data, criterion, optimizer):
         train, val = ImageDataset(train_data), ImageDataset(val_data)
-        # transform = transforms.Compose([
-        #     transforms.Grayscale(),
-        #     transforms.Resize((p.IMAGE_SIZE, p.IMAGE_SIZE)),
-        #     transforms.ToTensor(),
-        #     transforms.Normalize((0.485, ), (0.229, ))])
-        # train, val = datasets.ImageFolder(root="train_folder/train", transform=transform), datasets.ImageFolder(
-        #     root="train_folder/val", transform=transform)
 
         train_dataloader = torch.utils.data.DataLoader(train, batch_size=p.BATCH_SIZE, shuffle=True,
                                                        num_workers=p.NUM_WORKERS, pin_memory=True)
@@ -93,21 +86,22 @@ class Main:
                     acc = (output.argmax(dim=1) == val_label).sum().item()
                     total_acc_val += acc
 
-            print(f'\nEpochs: {epoch_num + 1} | Train Loss: {total_loss_train / (len(train_dataloader) * p.BATCH_SIZE): .3f} \
+            print(
+                f'\nEpochs: {epoch_num + 1} | Train Loss: {total_loss_train / (len(train_dataloader) * p.BATCH_SIZE): .3f} \
                     | Train Accuracy: {total_acc_train / (len(train_dataloader) * p.BATCH_SIZE): .3f} \
                     | Val Loss: {total_loss_val / (len(val_dataloader) * p.BATCH_SIZE): .3f} \
                     | Val Accuracy: {total_acc_val / (len(val_dataloader) * p.BATCH_SIZE): .3f}')
 
         if p.SAVE_MODEL:
-            if os.path.exists("Results"):
+            if not os.path.exists("Results"):
                 os.mkdir("Results")
-                if os.path.exists("Results/{}".format(self.version)):
+                if not os.path.exists("Results/{}".format(self.version)):
                     os.mkdir("Results/{}".format(self.version))
                     torch.save(model.state_dict(), "{}_model.pt".format(self.version))
 
 
 if __name__ == "__main__":
-    resnet_versions = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
-    # resnet_versions = ['resnet18']
+    # resnet_versions = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+    resnet_versions = ['resnet18']
     for version in resnet_versions:
         app = Main(version)

@@ -17,7 +17,8 @@ class ImageDataset(Dataset):
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])
         ls = []
-        for rows in self.dataframe.iloc[:, 3:11].values:
+        for rows in self.dataframe.iloc[:, 1:6].values:
+        # for rows in self.dataframe.iloc[:, 3:11].values:
             for i, cols in enumerate(rows):
                 if cols == 1:
                     ls.append(i)
@@ -25,8 +26,8 @@ class ImageDataset(Dataset):
 
     def __getitem__(self, idx):
         label = self.dataframe.iloc[idx, -1]
-        img_path = "Cancer_Data/" + self.dataframe.iloc[idx, 0]
-        image = Image.open(img_path)
+        img_path = "ValData/" + self.dataframe.iloc[idx, 0]
+        image = Image.open(img_path + ".jpg")
         if self.transform:
             image = self.transform(image)
         return image, label
