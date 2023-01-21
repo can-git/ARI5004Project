@@ -8,6 +8,7 @@ import Properties as p
 import random
 import shutil
 import os
+import Utils_Plot as up
 
 
 class Preprocess:
@@ -47,6 +48,12 @@ class Preprocess:
             df_val["side"] = ['val' for i in range(len(df_val))]  # 1497
             new_df = pd.concat([df_train, df_test, df_val])
             new_df.to_csv("Data.csv", index=False)
+
+    def show(self):
+        if os.path.exists("Data.csv"):
+            df = pd.read_csv("Data.csv")
+            plots = up.Utils_Plot("Distribution of Train-Test-Validation")
+            plots.plotClassesDistribution(df)
 
     def getItem(self):
         global df_train, df_val, df_test

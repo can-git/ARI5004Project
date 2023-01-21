@@ -5,66 +5,48 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import Properties as p
 import random
+import matplotlib.pyplot as plt
 import shutil
 import torch
 import torch.nn as nn
 from ImageDataset import ImageDataset
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, \
-    f1_score
-from sklearn.metrics import roc_curve, auc, roc_auc_score
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.preprocessing import LabelBinarizer
+import Utils_Metrics as um
+import Utils_Plot as up
+import csv
+import os
 
 
 class Evaluation:
-    def __init__(self, model, test_data, criterion):
+    def __init__(self, model, test_data, model_name):
+
         self.y_pred, self.y_prob, self.y = self.get_predictions(model, test_data)
-        acc = self.get_acc()
-        cm = self.get_confusion()
-        pre = self.get_precision()
-        rec = self.get_recall()
-        f1 = self.get_f1()
-        auroc = self.get_auroc()
-        print(acc)
-        print(cm)
-        print(pre)
-        print(rec)
-        print(f1)
-        print(auroc)
 
-    def get_acc(self):
-        return accuracy_score(self.y, self.y_pred)
+        metrics = um.Utils_Metrics(self.y_pred, self.y_prob, self.y)
+        plots = up.Utils_Plot(model_name)
 
-    def get_confusion(self):
-        return confusion_matrix(self.y, self.y_pred)
+        # self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
+        #                      metrics.get_recall(), metrics.get_cappa())
 
-    def get_precision(self):
-        return precision_score(self.y, self.y_pred, average='macro')
+        # plots.plotConfusionMatrix(metrics.get_confusion())
 
-    def get_recall(self):
-        return recall_score(self.y, self.y_pred, average='macro')
 
-    def get_f1(self):
-        return f1_score(self.y, self.y_pred, average='macro')
+    def save_to_csv(self, mn, acc, pr, f1, rc, kap):
 
-    def get_auroc(self):
-        y = np.concatenate(self.y)
-        y_pred = np.concatenate(self.y_prob, axis=0)
+        header = ['Model_Name', 'Accuracy', 'Precision', 'F1', 'Recall', 'Kappa']
 
-        lb = LabelBinarizer()
-        y_true = lb.fit_transform(y)
+        # Open the CSV file for writing
+        with open('Results/metrics.csv', 'a') as csvfile:
+            # Create a CSV writer
+            writer = csv.DictWriter(csvfile, fieldnames=header)
 
-        # Initialize the AUC-ROC score list
-        auc_roc_scores = []
+            # Write the header row if the file is empty
+            if csvfile.tell() == 0:
+                writer.writeheader()
 
-        # Loop through the classes
-        for i in range(y_true.shape[1]):
-            y_true_binary = y_true[:, i]
-            y_pred_binary = y_pred[:, i]
-            auc_roc = roc_auc_score(y_true_binary, y_pred_binary)
-            auc_roc_scores.append(auc_roc)
+            # Write the data rows
+            writer.writerow({'Model_Name': mn, 'Accuracy': acc, 'Precision': pr, 'F1': f1, 'Recall': rc, 'Kappa': kap})
 
-        return auc_roc_scores
+        print("{} saved to file".format(mn))
 
     def get_predictions(self, model, test_data):
         test = ImageDataset(test_data)

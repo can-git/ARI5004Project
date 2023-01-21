@@ -16,12 +16,12 @@ class Net(nn.Module):
         # Define max pooling layer
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         # Define fully connected layers
-        self.hiddensize = p.IMAGE_SIZE * p.IMAGE_SIZE
+        self.hiddensize = 50176
         self.fc1 = nn.Linear(in_features=self.hiddensize, out_features=256)
         self.fc2 = nn.Linear(in_features=256, out_features=128)
-        self.fc3 = nn.Linear(in_features=128, out_features=8)
+        self.fc3 = nn.Linear(in_features=128, out_features=5)
         # Define dropout layer
-        self.dropout = nn.Dropout(p=0.25)
+        self.dropout = nn.Dropout(p=0.5)
         self.softmax = nn.Softmax(dim=1)
         self.relu = nn.ReLU()
 
@@ -39,6 +39,7 @@ class Net(nn.Module):
         x = self.conv3(x)
         x = self.relu(x)
         x = self.pool(x)
+        x = self.dropout(x)
 
         x = self.conv4(x)
         x = self.relu(x)

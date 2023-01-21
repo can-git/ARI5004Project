@@ -11,6 +11,7 @@ class ImageDataset(Dataset):
     def __init__(self, dataframe):
         self.dataframe = dataframe
         self.transform = transforms.Compose([
+            # transforms.Grayscale(),
             transforms.Resize((p.IMAGE_SIZE, p.IMAGE_SIZE)),
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))

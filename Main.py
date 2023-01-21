@@ -5,98 +5,109 @@ from torch.utils.data import ConcatDataset
 from torchvision import models
 import Properties as p
 from Net import Net
+import os
 from Preprocess import Preprocess
 from tqdm import tqdm
 from ImageDataset import ImageDataset
 from Evaluation import Evaluation
+from torchvision import transforms, utils, datasets
+from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 
 
-def train(model,
-          train_data,
-          val_data,
-          criterion,
-          optimizer
-          ):
-    train, val = ImageDataset(train_data), ImageDataset(val_data)
+class Main:
+    def __init__(self, version):
+        self.version = version
 
-    train_dataloader = torch.utils.data.DataLoader(
-        train,
-        batch_size=p.BATCH_SIZE,
-        shuffle=True,
-        num_workers=p.NUM_WORKERS,
-        pin_memory=True
-    )
-    val_dataloader = torch.utils.data.DataLoader(
-        val,
-        batch_size=p.BATCH_SIZE, num_workers=p.NUM_WORKERS, pin_memory=True
-    )
+        preprocess = Preprocess()
+        preprocess.show()
+        df_train, df_val, df_test = preprocess.getItem()
 
-    use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda" if use_cuda else "cpu")
+        # model = Net()
+        model = getattr(models, version)()
 
-    if use_cuda:
-        model = model.cuda()
-        criterion = criterion.cuda()
+        num_classes = 8
+        in_features = model.fc.in_features
+        model.fc = nn.Linear(in_features, num_classes)
 
-    for epoch_num in range(p.EPOCHS):
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=p.LR, weight_decay=p.WD)
+        if p.TRAIN:
+            self.train(model, df_train, df_val, criterion, optimizer)
+        else:
+            model.load_state_dict(torch.load("Results/{}/{}_model.pt".format(self.version, self.version)))
+            Evaluation(model, df_test, self.version)
 
-        total_acc_train = 0
-        total_loss_train = 0
+    def train(self, model, train_data, val_data, criterion, optimizer):
+        train, val = ImageDataset(train_data), ImageDataset(val_data)
+        # transform = transforms.Compose([
+        #     transforms.Grayscale(),
+        #     transforms.Resize((p.IMAGE_SIZE, p.IMAGE_SIZE)),
+        #     transforms.ToTensor(),
+        #     transforms.Normalize((0.485, ), (0.229, ))])
+        # train, val = datasets.ImageFolder(root="train_folder/train", transform=transform), datasets.ImageFolder(
+        #     root="train_folder/val", transform=transform)
 
-        for train_input, train_label in tqdm(train_dataloader):
-            train_input, train_label = train_input.to(device), train_label.to(device)
+        train_dataloader = torch.utils.data.DataLoader(train, batch_size=p.BATCH_SIZE, shuffle=True,
+                                                       num_workers=p.NUM_WORKERS, pin_memory=True)
+        val_dataloader = torch.utils.data.DataLoader(val, batch_size=p.BATCH_SIZE, num_workers=p.NUM_WORKERS,
+                                                     pin_memory=True)
 
-            output = model(train_input)
+        use_cuda = torch.cuda.is_available()
+        device = torch.device("cuda" if use_cuda else "cpu")
 
-            batch_loss = criterion(output, train_label)
-            total_loss_train += batch_loss.item()
+        if use_cuda:
+            model = model.cuda()
+            criterion = criterion.cuda()
 
-            acc = (output.argmax(dim=1) == train_label).sum().item()
-            total_acc_train += acc
+        for epoch_num in range(p.EPOCHS):
+            total_acc_train = 0
+            total_loss_train = 0
 
-            model.zero_grad()
-            batch_loss.backward()
-            optimizer.step()
+            for train_input, train_label in tqdm(train_dataloader):
+                train_input, train_label = train_input.to(device), train_label.to(device)
 
-        total_acc_val = 0
-        total_loss_val = 0
+                output = model(train_input)
 
-        with torch.no_grad():
+                batch_loss = criterion(output, train_label)
+                total_loss_train += batch_loss.item()
 
-            for val_input, val_label in val_dataloader:
-                val_input, val_label = val_input.to(device), val_label.to(device)
+                acc = (output.argmax(dim=1) == train_label).sum().item()
+                total_acc_train += acc
 
-                output = model(val_input)
+                model.zero_grad()
+                batch_loss.backward()
+                optimizer.step()
 
-                batch_loss = criterion(output, val_label)
-                total_loss_val += batch_loss.item()
+            total_acc_val = 0
+            total_loss_val = 0
 
-                acc = (output.argmax(dim=1) == val_label).sum().item()
-                total_acc_val += acc
+            with torch.no_grad():
+                for val_input, val_label in val_dataloader:
+                    val_input, val_label = val_input.to(device), val_label.to(device)
 
-        print(
-            f'\nEpochs: {epoch_num + 1} | Train Loss: {total_loss_train / len(train_data): .3f} \
-                | Train Accuracy: {total_acc_train / len(train_data): .3f} \
-                | Val Loss: {total_loss_val / len(val_data): .3f} \
-                | Val Accuracy: {total_acc_val / len(val_data): .3f}'
-        )
+                    output = model(val_input)
 
-    if p.SAVE_MODEL:
-        torch.save(model.state_dict(), "model.pt")
+                    batch_loss = criterion(output, val_label)
+                    total_loss_val += batch_loss.item()
+
+                    acc = (output.argmax(dim=1) == val_label).sum().item()
+                    total_acc_val += acc
+
+            print(f'\nEpochs: {epoch_num + 1} | Train Loss: {total_loss_train / (len(train_dataloader) * p.BATCH_SIZE): .3f} \
+                    | Train Accuracy: {total_acc_train / (len(train_dataloader) * p.BATCH_SIZE): .3f} \
+                    | Val Loss: {total_loss_val / (len(val_dataloader) * p.BATCH_SIZE): .3f} \
+                    | Val Accuracy: {total_acc_val / (len(val_dataloader) * p.BATCH_SIZE): .3f}')
+
+        if p.SAVE_MODEL:
+            if os.path.exists("Results"):
+                os.mkdir("Results")
+                if os.path.exists("Results/{}".format(self.version)):
+                    os.mkdir("Results/{}".format(self.version))
+                    torch.save(model.state_dict(), "{}_model.pt".format(self.version))
 
 
-preprocess = Preprocess()
-df_train, df_val, df_test = preprocess.getItem()
-
-# model = Net()
-model = models.resnet18()
-
-num_classes = 8
-in_features = model.fc.in_features
-model.fc = nn.Linear(in_features, num_classes)
-
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=p.LR)
-# train(model, df_train, df_val, criterion, optimizer)
-model.load_state_dict(torch.load("model.pt"))
-Evaluation(model, df_test, criterion)
+if __name__ == "__main__":
+    resnet_versions = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+    # resnet_versions = ['resnet18']
+    for version in resnet_versions:
+        app = Main(version)
