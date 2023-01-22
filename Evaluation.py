@@ -23,11 +23,12 @@ class Evaluation:
 
         metrics = um.Utils_Metrics(self.y_pred, self.y_prob, self.y)
         plots = up.Utils_Plot(model_name)
+        print(metrics.get_confusion())
 
-        # self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
-        #                      metrics.get_recall(), metrics.get_cappa())
+        self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
+                             metrics.get_recall(), metrics.get_cappa())
 
-        # plots.plotConfusionMatrix(metrics.get_confusion())
+        plots.plotConfusionMatrix(metrics.get_confusion())
 
 
     def save_to_csv(self, mn, acc, pr, f1, rc, kap):
