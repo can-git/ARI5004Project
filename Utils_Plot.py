@@ -73,10 +73,3 @@ class Utils_Plot:
         plt.savefig("Visualization/class_distribution.png")
         plt.close()
 
-    def plotMalignantDistribution(self, data):
-        class_counts = data['malignant'].value_counts()
-        class_counts.plot(kind='bar')
-        plt.ylabel('Count')
-        plt.title(self.plot_title)
-        plt.savefig("Visualization/malignant_distribution.png")
-        plt.close()

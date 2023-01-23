@@ -6,7 +6,7 @@ from torchvision import models
 import Properties as p
 from Net import Net
 import os
-from Preprocess2 import Preprocess2
+from Preprocess import Preprocess
 from tqdm import tqdm
 from ImageDataset import ImageDataset
 from Evaluation import Evaluation
@@ -18,7 +18,7 @@ class Main:
     def __init__(self, version):
         self.version = version
 
-        preprocess = Preprocess2()
+        preprocess = Preprocess()
         # preprocess.show()
         df_train, df_val, df_test = preprocess.getItem()
 
@@ -53,10 +53,11 @@ class Main:
 
         use_cuda = torch.cuda.is_available()
         device = torch.device("cuda" if use_cuda else "cpu")
+        # device = torch.device("cpu")
 
         if use_cuda:
 
-            model = nn.DataParallel(model).cuda()
+            model = nn.DataParallel(model, device_ids=[0]).cuda()
 
             criterion = criterion.cuda()
 
