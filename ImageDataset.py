@@ -13,6 +13,10 @@ class ImageDataset(Dataset):
         self.transform = transforms.Compose([
             # transforms.Grayscale(),
             transforms.Resize((p.IMAGE_SIZE, p.IMAGE_SIZE)),
+            transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
+            transforms.RandomRotation(degrees=90),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])

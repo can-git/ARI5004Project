@@ -22,12 +22,18 @@ class Main:
         # preprocess.show()
         df_train, df_val, df_test = preprocess.getItem()
 
-        # model = Net()
-        model = getattr(models, version)()
+        if self.version == "cnn8":
+            model = Net()
+        elif self.version == "resnet18":
+            model = getattr(models, version)()
+            in_features = model.fc.in_features
+            model.fc = nn.Linear(in_features, p.NUM_CLASSES)
+        elif self.version == "densenet121":
+            model = models.densenet121()
+            num_ftrs = model.classifier.in_features
+            model.classifier = nn.Linear(num_ftrs, p.NUM_CLASSES)
+            torch.nn.init.kaiming_normal_(model.classifier.weight)
 
-        num_classes = 5
-        in_features = model.fc.in_features
-        model.fc = nn.Linear(in_features, num_classes)
 
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=p.LR, weight_decay=p.WD)
@@ -49,7 +55,9 @@ class Main:
         device = torch.device("cuda" if use_cuda else "cpu")
 
         if use_cuda:
-            model = model.cuda()
+
+            model = nn.DataParallel(model).cuda()
+
             criterion = criterion.cuda()
 
         for epoch_num in range(p.EPOCHS):
@@ -101,7 +109,7 @@ class Main:
 
 
 if __name__ == "__main__":
-    # resnet_versions = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
-    resnet_versions = ['resnet18']
-    for version in resnet_versions:
+    dl_models = ['resnet18', 'cnn8', 'densenet121']
+    # dl_models = ['densenet121']
+    for version in dl_models:
         app = Main(version)
