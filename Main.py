@@ -111,6 +111,5 @@ class Main:
 
 if __name__ == "__main__":
     dl_models = ['resnet18', 'cnn8', 'densenet121']
-    # dl_models = ['densenet121']
     for version in dl_models:
         app = Main(version)
