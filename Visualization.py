@@ -31,7 +31,7 @@ class Visualization:
             for model in os.listdir("Results/"):
                 if model != ".DS_Store":
                     if os.path.isdir(os.path.join("Results", model)):
-                        pred, _, y = self.get_predictions(torch.jit.load("Results/{}/{}_model.pt".format(model, model)),
+                        pred, _, y = self.get_predictions(torch.load("Results/{}/{}_model.pt".format(model, model)),
                                                           test_data)
                         preds.append(pred)
                         label = y
@@ -42,7 +42,7 @@ class Visualization:
         test = ImageDataset(test_data, self.im_size)
 
         test_dataloader = torch.utils.data.DataLoader(test, batch_size=1)
-
+        model.eval()
         use_cuda = torch.cuda.is_available()
         device = torch.device("cuda:0" if use_cuda else "cpu")
 

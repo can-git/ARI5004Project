@@ -12,7 +12,7 @@ from Preprocess import Preprocess
 
 
 class Evaluation:
-    def __init__(self, model, test_data, model_name, im_size, visualization):
+    def __init__(self, model, test_data, model_name, im_size):
         self.im_size = im_size
         self.y_pred, self.y_prob, self.y = self.get_predictions(model, test_data)
 
@@ -52,7 +52,7 @@ class Evaluation:
         test = ImageDataset(test_data, self.im_size)
 
         test_dataloader = torch.utils.data.DataLoader(test, batch_size=1)
-
+        model.eval()
         use_cuda = torch.cuda.is_available()
         device = torch.device("cuda:0" if use_cuda else "cpu")
 
@@ -77,13 +77,13 @@ class Evaluation:
 
 
 @click.command()
-@click.option('--name', '-n', default="", help='Name of the model.')
+@click.option('--name', '-n', default="densenet121", help='Name of the model.')
 @click.option('--im_size', '-s', default=228, help='Image Size')
-@click.option('--visualization', '-v', is_flag=True, help="Export Data Visuals")
-def main(name, im_size, visualization):
+# @click.option('--visualization', '-v', is_flag=True, help="Export Data Visuals")
+def main(name, im_size):
     preprocess = Preprocess()
     df_test = preprocess.getItem("test")
-    Evaluation(torch.jit.load("Results/{}/{}_model.pt".format(name, name)), df_test, name, im_size, visualization)
+    Evaluation(torch.load("Results/{}/{}_model.pt".format(name, name)), df_test, name, im_size)
 
 
 if __name__=="__main__":

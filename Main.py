@@ -61,7 +61,9 @@ class Main:
         device = torch.device("cuda:0" if use_cuda else "cpu")
 
         if use_cuda:
-            model = nn.DataParallel(model, device_ids=[0, 3]).to(device)
+            model = nn.DataParallel(model, device_ids=[0, 1, 2, 3])
+            model.to(device)
+            model.train()
 
         for epoch_num in range(self.epochs):
             total_acc_train = 0
@@ -108,19 +110,19 @@ class Main:
                 os.mkdir("Results")
             if not os.path.exists("Results/{}".format(self.version)):
                 os.mkdir("Results/{}".format(self.version))
-            torch.jit.script(model).save("Results/{}/{}_model.pt".format(self.version, self.version))
+            torch.save(model, "Results/{}/{}_model.pt".format(self.version, self.version))
 
 
 @click.command()
 @click.option('--name', default="resnet18", help='Name of the model. (cnn8, resnet18 or densenet121)')
-@click.option('--batch_size', default=1, help='Batch Size')
-@click.option('--num_workers', default=2, help='Num Workers')
-@click.option('--epochs', default=1, help='Epochs')
+@click.option('--batch_size', default=4, help='Batch Size')
+@click.option('--num_workers', default=12, help='Num Workers')
+@click.option('--epochs', default=9, help='Epochs')
 @click.option('--lr', default=0.00008, help='Learning Rate')
 @click.option('--wd', default=0, help='Weight Decay')
 @click.option('--gamma', default=0.9, help='Gamma')
 @click.option('--save', '-s', is_flag=True, help="Save Model at the end")
-@click.option('--im_size', '-size', default=228, help='Image Size')
+@click.option('--im_size', default=228, help='Image Size')
 def main(name, batch_size, num_workers, epochs, lr, wd, gamma, save, im_size):
     Main(name, batch_size, num_workers, epochs, lr, wd, gamma, save, im_size)
 

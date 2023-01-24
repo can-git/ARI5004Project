@@ -26,7 +26,7 @@ class Preprocess:
             for i in df["classes"].unique():
                 df_classes = df[df['classes'] == i]
                 df = df.drop(df[df['classes'] == i].index, inplace=False)
-                df_classes = df_classes.iloc[:10]
+                df_classes = df_classes.iloc[:4000]
                 df = pd.concat([df, df_classes])
 
             self.move_images(df)
