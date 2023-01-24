@@ -15,14 +15,14 @@ Adenocarcinoma Slides](https://drive.google.com/file/d/1fs-4PK2iSX_sbzeuIlnXxy6Y
 Python packages required (can be installed via pip or conda):
 
 ``` 
-torchvision==0.14.0
-tqdm==4.64.1
-numpy==1.24.1
-pandas==1.5.2
-matplotlib==3.6.2
-scikit-learn==1.2.0
-seaborn==0.12.2
-pillow==9.4.0
+torchvision
+tqdm
+numpy
+pandas
+matplotlib
+scikit-learn
+seaborn
+pillow
 ```
 
 ## Data Preparation
@@ -67,7 +67,7 @@ Options:
   --lr FLOAT             Learning Rate
   --wd INTEGER           Weight Decay
   --gamma FLOAT          Gamma
-  --save_model BOOLEAN   Save Model at the end
+  --save BOOLEAN   Save Model at the end
   --im_size INTEGER      Image Size
 ```
 
@@ -103,11 +103,11 @@ This will save some metric result images in the Results folder.
 Our models achieve the following performances on :
 
 
-| Model name                                                                                     | Accuracy | Precision | Recall | F1  |
-|------------------------------------------------------------------------------------------------|----------|-----------|--------|-----|
-| [CNN](https://drive.google.com/file/d/1nAc6Fbh0K4zq_njjYAkpSzHu4jhqq2xr/view?usp=sharing)      | 85%      | 95%       | 95%    | 95% |
-| [ResNet](https://drive.google.com/file/d/1jktw8YApfWIJEpR-E45mdfThctAEr6si/view?usp=sharing)   | 85%      | 95%       | 95%    | 95% |
-| [DenseNet](https://drive.google.com/file/d/1752e-nGk6Q6zinhugwBh6Ecf2rLB0aDG/view?usp=sharing) | 85%      | 95%       | 95%    | 95% |
+| Model name                                                                                     | Accuracy | Precision | Recall | F1    |
+|------------------------------------------------------------------------------------------------|----------|-----------|--------|-------|
+| [CNN](https://drive.google.com/file/d/1Mhbxo7XYpfiaX-KtvCK_PL4HfoGSjWqa/view?usp=sharing)      | 0.89%    | 0.89%     | 0.88%  | 0.89% |
+| [ResNet](https://drive.google.com/file/d/1sWPm_AEl2mOrgICo2xV8whX_ht7wYYn3/view?usp=sharing)   | 0.92%    | 0.93%     | 0.92%  | 0.92% |
+| [DenseNet](https://drive.google.com/file/d/1xIVPKVo8dyuEyHEAa04DCTCnOj-mcZ_R/view?usp=sharing) | 0.94%    | 0.94%     | 0.94%  | 0.94% |
 
 
 ## Contributing
