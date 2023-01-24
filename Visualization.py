@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn as nn
 from ImageDataset import ImageDataset
 import Utils_Metrics as um
 import Utils_Plot as up
@@ -25,7 +26,7 @@ class Visualization:
 
         if kappa:
             preds = []
-            label = None
+            label = []
             names = []
             for model in os.listdir("Results/"):
                 if model != ".DS_Store":
@@ -35,8 +36,7 @@ class Visualization:
                         preds.append(pred)
                         label = y
                         names.append(model)
-            scores = plots.plotCappa(metrics.get_cappa(names, preds, label))
-            print(scores)
+            plots.plotCappa(metrics.get_cappa(names, preds, label))
 
     def get_predictions(self, model, test_data):
         test = ImageDataset(test_data, self.im_size)
@@ -44,10 +44,10 @@ class Visualization:
         test_dataloader = torch.utils.data.DataLoader(test, batch_size=1)
 
         use_cuda = torch.cuda.is_available()
-        device = torch.device("cuda" if use_cuda else "cpu")
+        device = torch.device("cuda:0" if use_cuda else "cpu")
 
         if use_cuda:
-            model = model.to(device)
+            model = nn.DataParallel(model, device_ids=[0, 3]).to(device)
 
         predicted_values = []
         probabilities = []
@@ -67,8 +67,8 @@ class Visualization:
 
 
 @click.command()
-@click.option('--im_size', default=228, help='Image Size')
-@click.option('--kappa', default=True, help='Export Kappa')
+@click.option('--im_size', '-s', default=228, help='Image Size')
+@click.option('--kappa', '-k', is_flag=True, help="Export Kappa")
 def main(im_size, kappa):
     preprocess = Preprocess()
     df_test = preprocess.getItem("test")

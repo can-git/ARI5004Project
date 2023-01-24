@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import torch
+import torch.nn as nn
 from ImageDataset import ImageDataset
 import Utils_Metrics as um
 import Utils_Plot as up
@@ -20,22 +21,11 @@ class Evaluation:
         plots = up.Utils_Plot(model_name)
 
         self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
-                             metrics.get_recall(), metrics.get_cappa())
+                             metrics.get_recall())
 
-        plots.plotConfusionMatrix(metrics.get_confusion())
-        plots.plotAuRoc(metrics.get_auroc())
+    def save_to_csv(self, mn, acc, pr, f1, rc):
 
-        if visualization:
-            self.data_visualization()
-            preds = []
-            for model in os.listdir("Results/"):
-                pred, _, y = self.get_predictions(torch.jit.load("Results/{}/{}_model.pt".format(model, model)), test_data)
-                preds.append(pred)
-            plots.plotCappa(metrics.get_cappa(preds))
-
-    def save_to_csv(self, mn, acc, pr, f1, rc, kap):
-
-        header = ['Model_Name', 'Accuracy', 'Precision', 'F1', 'Recall', 'Kappa']
+        header = ['Model_Name', 'Accuracy', 'Precision', 'F1', 'Recall']
 
         # Open the CSV file for writing
         with open('Results/metrics.csv', 'a') as csvfile:
@@ -47,7 +37,7 @@ class Evaluation:
                 writer.writeheader()
 
             # Write the data rows
-            writer.writerow({'Model_Name': mn, 'Accuracy': acc, 'Precision': pr, 'F1': f1, 'Recall': rc, 'Kappa': kap})
+            writer.writerow({'Model_Name': mn, 'Accuracy': acc, 'Precision': pr, 'F1': f1, 'Recall': rc})
 
         print("{} saved to file".format(mn))
 
@@ -64,10 +54,10 @@ class Evaluation:
         test_dataloader = torch.utils.data.DataLoader(test, batch_size=1)
 
         use_cuda = torch.cuda.is_available()
-        device = torch.device("cuda" if use_cuda else "cpu")
+        device = torch.device("cuda:0" if use_cuda else "cpu")
 
         if use_cuda:
-            model = model.to(device)
+            model = nn.DataParallel(model, device_ids=[0, 3]).to(device)
 
         predicted_values = []
         probabilities = []
@@ -87,9 +77,9 @@ class Evaluation:
 
 
 @click.command()
-@click.option('--name', default="", help='Name of the model.')
-@click.option('--im_size', default=228, help='Image Size')
-@click.option('--visualization', default=True, help='Export Data Visuals')
+@click.option('--name', '-n', default="", help='Name of the model.')
+@click.option('--im_size', '-s', default=228, help='Image Size')
+@click.option('--visualization', '-v', is_flag=True, help="Export Data Visuals")
 def main(name, im_size, visualization):
     preprocess = Preprocess()
     df_test = preprocess.getItem("test")

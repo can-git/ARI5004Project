@@ -58,13 +58,10 @@ class Main:
                                                      pin_memory=True)
 
         use_cuda = torch.cuda.is_available()
-        device = torch.device("cuda" if use_cuda else "cpu")
-        # device = torch.device("cpu")
+        device = torch.device("cuda:0" if use_cuda else "cpu")
 
         if use_cuda:
-            model = model.cuda()
-
-            criterion = criterion.cuda()
+            model = nn.DataParallel(model, device_ids=[0, 3]).to(device)
 
         for epoch_num in range(self.epochs):
             total_acc_train = 0
@@ -106,7 +103,7 @@ class Main:
                     | Val Loss: {total_loss_val / (len(val_dataloader) * self.batch_size): .3f} \
                     | Val Accuracy: {total_acc_val / (len(val_dataloader) * self.batch_size): .3f}')
 
-        if p.SAVE_MODEL:
+        if self.save_model:
             if not os.path.exists("Results"):
                 os.mkdir("Results")
             if not os.path.exists("Results/{}".format(self.version)):
@@ -117,15 +114,15 @@ class Main:
 @click.command()
 @click.option('--name', default="resnet18", help='Name of the model. (cnn8, resnet18 or densenet121)')
 @click.option('--batch_size', default=1, help='Batch Size')
-@click.option('--num_workers', default=12, help='Num Workers')
+@click.option('--num_workers', default=2, help='Num Workers')
 @click.option('--epochs', default=1, help='Epochs')
 @click.option('--lr', default=0.00008, help='Learning Rate')
 @click.option('--wd', default=0, help='Weight Decay')
 @click.option('--gamma', default=0.9, help='Gamma')
-@click.option('--save_model', default=True, help='Save Model at the end')
-@click.option('--im_size', default=228, help='Image Size')
-def main(name, batch_size, num_workers, epochs, lr, wd, gamma, save_model, im_size):
-    Main(name, batch_size, num_workers, epochs, lr, wd, gamma, save_model, im_size)
+@click.option('--save', '-s', is_flag=True, help="Save Model at the end")
+@click.option('--im_size', '-size', default=228, help='Image Size')
+def main(name, batch_size, num_workers, epochs, lr, wd, gamma, save, im_size):
+    Main(name, batch_size, num_workers, epochs, lr, wd, gamma, save, im_size)
 
 
 if __name__ == "__main__":

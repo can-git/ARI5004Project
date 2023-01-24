@@ -50,14 +50,17 @@ class Utils_Metrics:
         return auc_roc_scores
 
     def get_cappa(self, model_names, predictions, true_labels):
-        scores = []
-        models = []
+        # scores = []
+        # models = []
         for i in range(len(model_names)):
             for j in range(i + 1, len(model_names)):
                 model1 = model_names[i]
                 model2 = model_names[j]
 
-                scores.append(cohen_kappa_score(predictions[i], predictions[j], labels=true_labels))
-                models.append("{}_{}".format(model1, model2))
+                # scores.append(cohen_kappa_score(predictions[i], predictions[j], labels=true_labels))
+                # models.append("{}_{}".format(model1, model2))
+                print("Models ({}_{})'s kappa score is {}".format(model1, model2,
+                                                                  cohen_kappa_score(predictions[i], predictions[j],
+                                                                                    labels=true_labels)))
 
-        return pd.DataFrame({'model_names': models, 'kappa_scores': scores})
+        # return pd.DataFrame({'model_names': models, 'kappa_scores': scores})

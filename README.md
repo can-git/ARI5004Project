@@ -110,12 +110,6 @@ Our models achieve the following performances on :
 | [DenseNet](https://drive.google.com/file/d/1752e-nGk6Q6zinhugwBh6Ecf2rLB0aDG/view?usp=sharing) | 85%      | 95%       | 95%    | 95% |
 
 
-## Known Issues and Limitations
-
-```
- - Only 1 GPU is supported
-```
-
 ## Contributing
 This project is prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
 Thank you to my professor Mustafa Umit Oner for all the achievements.
