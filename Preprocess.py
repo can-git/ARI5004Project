@@ -29,6 +29,7 @@ class Preprocess:
             df = pd.get_dummies(df, columns=['classes'])
             df["classes"] = classes
 
+            # This block is looking each classes folder and decreasing amount of the data
             for i in df["classes"].unique():
                 df_classes = df[df['classes'] == i]
                 df = df.drop(df[df['classes'] == i].index, inplace=False)
