@@ -1,14 +1,7 @@
-import re
-import string
-import torch
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import Properties as p
-import random
 import shutil
 import os
-import Utils_Plot as up
 
 
 class Preprocess:
@@ -47,15 +40,20 @@ class Preprocess:
             new_df = pd.concat([df_train, df_test, df_val])
             new_df.to_csv("Data/data.csv", index=False)
 
-
-    def getItem(self):
+    def getItem(self, side):
         global df_train, df_val, df_test
         if os.path.exists("Data/data.csv"):
             df = pd.read_csv("Data/data.csv")
             df_train = df.loc[df['side'] == "train"]
             df_test = df.loc[df['side'] == "test"]
             df_val = df.loc[df['side'] == "val"]
-        return df_train, df_val, df_test
+
+        if side == "train":
+            return df_train, df_val
+        elif side == "test":
+            return df_test
+        else:
+            return df_train, df_val, df_test
 
     def move_images(self, df):
         for i, row in enumerate(df.values):

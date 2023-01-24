@@ -1,19 +1,13 @@
-import re
-import string
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
-import Properties as p
-import random
-import matplotlib.pyplot as plt
-import shutil
 import torch
-import torch.nn as nn
 from ImageDataset import ImageDataset
 import Utils_Metrics as um
 import Utils_Plot as up
 import csv
 import os
+import click
+from Preprocess import Preprocess
 
 
 class Evaluation:
@@ -82,3 +76,15 @@ class Evaluation:
                 real_values.append(test_label.detach().cpu().numpy())
 
         return predicted_values, probabilities, real_values
+
+
+@click.command()
+@click.option('--name', default="", help='Name of the model.')
+def main(name):
+    preprocess = Preprocess()
+    df_test = preprocess.getItem("test")
+    Evaluation(torch.jit.load("Results/{}/{}_model.pt".format(name, name)), df_test, name)
+
+
+if __name__=="__main__":
+    main()

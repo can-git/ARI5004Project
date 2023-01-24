@@ -27,7 +27,9 @@ Python packages required (can be installed via pip or conda):
 
 ## Data Preparation
 
-First of all, gather a dataset according to the specified format:
+A proposed dataset can be achieved from [Drive](https://drive.google.com/file/d/1Q2SaakGyjvc5FaaaBisKaBBGwh0J5z0X/view?usp=sharing).
+
+After downloading, dataset must be in the specific format as below:
 
 ```
 Data
@@ -42,6 +44,17 @@ Data
           └── ...    
       
 ```
+This will change Data folder as:
+```
+Data
+    │
+    ├── Lung_Data
+                 ├──  <img1>
+                 ├──  <img1>
+                 └──  ...
+    └── data.csv
+```
+This format is a must for train and evaluation processes.
 
 ## Hyperparameters
 
@@ -63,55 +76,51 @@ WD = 0  # Weight Decay
 GAMMA = 0.9
 SAVE_MODEL = True
 IMAGE_SIZE = 228
-TRAIN = True  # Change to False to analyse model(s) by some metrics
+TRAIN = True  # Change this to False to analyse model(s) by some metrics
 NUM_CLASSES = 5  # Amount of classes to classify in the model according to the dataset
 ```
 
 ## Training
 
-To train the model(s) in the paper, run this command:
+To train the model, run this command:
 
 ```train
-python train.py --input-data <path_to_data> --alpha 10 --beta 20
+python Main.py --name <modelname>
 ```
-
->📋  Describe how to train the models, with example commands on how to train the models in your paper, including the full training procedure and appropriate hyperparameters.
+*Currently a few models are supported(cnn8, resnet18 and densenet121)*
 
 ## Evaluation
 
-To evaluate my model on ImageNet, run:
+To evaluate model with Lung_Data dataset, ".pt" file should be as in the example:
+
+```results
+Results
+       │
+       └── <modelname>
+                      └── <modelname>_model.pt
+```
+If the format is as above, then the code below will work successfully.
 
 ```eval
-python eval.py --model-file mymodel.pth --benchmark imagenet
+python Evaluation.py --name <modelname>
 ```
-
->📋  Describe how to evaluate the trained models on benchmarks reported in the paper, give commands that produce the results (section below).
-
-## Pre-trained Models
-
-You can download pretrained models here:
-
-- [My awesome model](https://drive.google.com/mymodel.pth) trained on ImageNet using parameters x,y,z. 
-
->📋  Give a link to where/how the pretrained models can be downloaded and how they were trained (if applicable).  Alternatively you can have an additional column in your results table with a link to the models.
 
 ## Results
 
 Our models achieve the following performances on :
 
 
-| Model name | Accuracy | Precision | Recall | F1  |
-|------------|----------|-----------|--------|-----|
-| CNN        | 85%      | 95%       | 95%    | 95% |
-| ResNet     | 85%      | 95%       | 95%    | 95% |
-| DenseNet   | 85%      | 95%       | 95%    | 95% |
+| Model name                                                                                     | Accuracy | Precision | Recall | F1  |
+|------------------------------------------------------------------------------------------------|----------|-----------|--------|-----|
+| [CNN](https://drive.google.com/file/d/1nAc6Fbh0K4zq_njjYAkpSzHu4jhqq2xr/view?usp=sharing)      | 85%      | 95%       | 95%    | 95% |
+| [ResNet](https://drive.google.com/file/d/1jktw8YApfWIJEpR-E45mdfThctAEr6si/view?usp=sharing)   | 85%      | 95%       | 95%    | 95% |
+| [DenseNet](https://drive.google.com/file/d/1752e-nGk6Q6zinhugwBh6Ecf2rLB0aDG/view?usp=sharing) | 85%      | 95%       | 95%    | 95% |
 
 
 ## Known Issues and Limitations
 
 ```
  - Only 1 GPU is supported
- - The dataset used in this study was not presented.
 ```
 
 ## Contributing

@@ -1,11 +1,9 @@
 
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, \
-    f1_score, cohen_kappa_score
-from sklearn.metrics import roc_curve, auc, roc_auc_score
-from sklearn.multiclass import OneVsRestClassifier
+    cohen_kappa_score
+from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import LabelBinarizer
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class Utils_Metrics:

@@ -8,6 +8,8 @@ __pycache__/
 # C extensions
 *.so
 *.xml
+Results/
+*.pt
 
 # Distribution / packaging
 .Python
@@ -185,3 +187,4 @@ fabric.properties
 
 # idea folder, uncomment if you don't need it
 # .idea
+/Results/
