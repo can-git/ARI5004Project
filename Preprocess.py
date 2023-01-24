@@ -33,7 +33,7 @@ class Preprocess:
             for i in df["classes"].unique():
                 df_classes = df[df['classes'] == i]
                 df = df.drop(df[df['classes'] == i].index, inplace=False)
-                df_classes = df_classes.iloc[:4000]
+                df_classes = df_classes.iloc[:10]
                 df = pd.concat([df, df_classes])
 
             self.move_images(df)
@@ -56,14 +56,6 @@ class Preprocess:
             df_test = df.loc[df['side'] == "test"]
             df_val = df.loc[df['side'] == "val"]
         return df_train, df_val, df_test
-
-    def show(self):
-        if os.path.exists("Data/data.csv"):
-            df = pd.read_csv("Data/data.csv")
-            plots = up.Utils_Plot("Distribution of Train-Test-Validation")
-            plots.plotSidesDistribution(df)
-            plots.plotClassesDistribution(df)
-            # plots.plotMalignantDistribution(df)
 
     def move_images(self, df):
         for i, row in enumerate(df.values):

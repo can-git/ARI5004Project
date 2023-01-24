@@ -38,7 +38,9 @@ class Utils_Plot:
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
         plt.title(self.plot_title)
-        plt.show()
+        plt.savefig("Results/{}/AuRoc.png".format(self.plot_title))
+        plt.close()
+        print("Results/{}/AuRoc saved".format(self.plot_title))
 
     def plotCappa(self, score):
         plt.plot(['Cohen\'s Kappa'], [score], marker='o')
@@ -47,29 +49,23 @@ class Utils_Plot:
         plt.show()
 
     def plotSidesDistribution(self, data):
-        class_counts = data['side'].value_counts()
-        class_counts2 = data['classes'].value_counts()
-        # class_counts.plot(kind='bar')
-        # class_counts2.plot(kind='bar')
-        # plt.ylabel('Count')
-        # plt.title(self.plot_title)
-        # plt.savefig("Visualization/distribution.png")
-        # plt.close()
-
         sns.set_theme(style="ticks")
 
-        f, ax = plt.subplots(figsize=(7, 5))
+        f, ax = plt.subplots()
         sns.despine(f)
 
         sns.histplot(data, x="classes", hue="side", multiple="stack", edgecolor=".3", linewidth=.5, )
         plt.xlabel("Classes")
-        plt.show()
+        plt.savefig("Results/SidesDistribution.png")
+        plt.close()
+        print("Results/SidesDistribution saved")
 
     def plotClassesDistribution(self, data):
         class_counts = data['classes'].value_counts()
         class_counts.plot(kind='bar')
         plt.ylabel('Count')
         plt.title(self.plot_title)
-        plt.savefig("Visualization/class_distribution.png")
+        plt.savefig("Results/ClassDistribution.png")
         plt.close()
+        print("Results/ClassDistribution saved")
 

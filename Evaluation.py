@@ -23,13 +23,13 @@ class Evaluation:
 
         metrics = um.Utils_Metrics(self.y_pred, self.y_prob, self.y)
         plots = up.Utils_Plot(model_name)
-        print(metrics.get_confusion())
 
         self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
                              metrics.get_recall(), metrics.get_cappa())
 
         plots.plotConfusionMatrix(metrics.get_confusion())
-
+        plots.plotAuRoc(metrics.get_auroc())
+        self.data_visualization()
 
     def save_to_csv(self, mn, acc, pr, f1, rc, kap):
 
@@ -48,6 +48,13 @@ class Evaluation:
             writer.writerow({'Model_Name': mn, 'Accuracy': acc, 'Precision': pr, 'F1': f1, 'Recall': rc, 'Kappa': kap})
 
         print("{} saved to file".format(mn))
+
+    def data_visualization(self):
+        if os.path.exists("Data/data.csv"):
+            df = pd.read_csv("Data/data.csv")
+            plots = up.Utils_Plot("Distribution of Train-Test-Validation")
+            plots.plotSidesDistribution(df)
+            plots.plotClassesDistribution(df)
 
     def get_predictions(self, model, test_data):
         test = ImageDataset(test_data)

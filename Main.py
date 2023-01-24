@@ -104,9 +104,9 @@ class Main:
         if p.SAVE_MODEL:
             if not os.path.exists("Results"):
                 os.mkdir("Results")
-                if not os.path.exists("Results/{}".format(self.version)):
-                    os.mkdir("Results/{}".format(self.version))
-                    torch.save(model.state_dict(), "Results/{}/{}_model.pt".format( self.version, self.version))
+            if not os.path.exists("Results/{}".format(self.version)):
+                os.mkdir("Results/{}".format(self.version))
+            torch.save(model.state_dict(), "Results/{}/{}_model.pt".format( self.version, self.version))
 
 
 if __name__ == "__main__":
