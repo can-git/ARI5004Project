@@ -1,13 +1,16 @@
-
+import os
+import torch
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, \
     cohen_kappa_score
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import LabelBinarizer
 import numpy as np
+from itertools import combinations
+import pandas as pd
 
 
 class Utils_Metrics:
-    def __init__(self, y_pred, y_prob, y):
+    def set(self, y_pred, y_prob, y):
         self.y = y
         self.y_pred = y_pred
         self.y_prob = y_prob
@@ -46,5 +49,15 @@ class Utils_Metrics:
 
         return auc_roc_scores
 
-    def get_cappa(self):
-        return cohen_kappa_score(self.y, self.y_pred)
+    def get_cappa(self, model_names, predictions, true_labels):
+        scores = []
+        models = []
+        for i in range(len(model_names)):
+            for j in range(i + 1, len(model_names)):
+                model1 = model_names[i]
+                model2 = model_names[j]
+
+                scores.append(cohen_kappa_score(predictions[i], predictions[j], labels=true_labels))
+                models.append("{}_{}".format(model1, model2))
+
+        return pd.DataFrame({'model_names': models, 'kappa_scores': scores})

@@ -43,10 +43,14 @@ class Utils_Plot:
         print("Results/{}/AuRoc saved".format(self.plot_title))
 
     def plotCappa(self, score):
-        plt.plot(['Cohen\'s Kappa'], [score], marker='o')
-        plt.ylim([-1, 1])
-        plt.ylabel('Score')
-        plt.show()
+        # plt.plot(['Cohen\'s Kappa'], [score[0]], marker='o')
+        # plt.plot(['Cohen\'s Kappa'], [score[1]], marker='o')
+        # plt.plot(['Cohen\'s Kappa'], [score[2]], marker='o')
+        # plt.ylim([-1, 1])
+        # plt.ylabel('Score')
+        # plt.show()
+
+        print("Kappa score: ", score)
 
     def plotSidesDistribution(self, data):
         sns.set_theme(style="ticks")
@@ -56,16 +60,16 @@ class Utils_Plot:
 
         sns.histplot(data, x="classes", hue="side", multiple="stack", edgecolor=".3", linewidth=.5, )
         plt.xlabel("Classes")
-        plt.savefig("Results/SidesDistribution.png")
+        plt.savefig("Visualization/SidesDistribution.png")
         plt.close()
-        print("Results/SidesDistribution saved")
+        print("Visualization/SidesDistribution saved")
 
     def plotClassesDistribution(self, data):
         class_counts = data['classes'].value_counts()
         class_counts.plot(kind='bar')
         plt.ylabel('Count')
         plt.title(self.plot_title)
-        plt.savefig("Results/ClassDistribution.png")
+        plt.savefig("Visualization/ClassDistribution.png")
         plt.close()
-        print("Results/ClassDistribution saved")
+        print("Visualization/ClassDistribution saved")
 

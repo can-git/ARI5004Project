@@ -50,7 +50,7 @@ class Main:
         self.train(model, df_train, df_val, criterion, optimizer)
 
     def train(self, model, train_data, val_data, criterion, optimizer):
-        train, val = ImageDataset(train_data), ImageDataset(val_data)
+        train, val = ImageDataset(train_data, self.im_size), ImageDataset(val_data, self.im_size)
 
         train_dataloader = torch.utils.data.DataLoader(train, batch_size=self.batch_size, shuffle=True,
                                                        num_workers=self.num_workers, pin_memory=True)

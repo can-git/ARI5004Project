@@ -15,14 +15,14 @@ Adenocarcinoma Slides](https://drive.google.com/file/d/1fs-4PK2iSX_sbzeuIlnXxy6Y
 Python packages required (can be installed via pip or conda):
 
 ``` 
- - torchvision
- - tqdm
- - numpy
- - pandas
- - matplotlib
- - scikit-learn
- - seaborn
- - pillow
+torchvision==0.14.0
+tqdm==4.64.1
+numpy==1.24.1
+pandas==1.5.2
+matplotlib==3.6.2
+scikit-learn==1.2.0
+seaborn==0.12.2
+pillow==9.4.0
 ```
 
 ## Data Preparation
@@ -44,19 +44,8 @@ Data
           └── ...    
       
 ```
-This will change Data folder as:
-```
-Data
-    │
-    ├── Lung_Data
-                 ├──  <img1>
-                 ├──  <img1>
-                 └──  ...
-    └── data.csv
-```
-This format is a must for train and evaluation processes.
 
-## Hyperparameters
+## Additional Details
 
 ### In the Preprocess.py file:
 ``` python
@@ -65,33 +54,36 @@ df_classes = df_classes.iloc[:4000]
 This line is added to fix the data imbalance between classes. 
 Change for personal wishes or put a comment character(#) on the beginning to disable it.
 
-### Adjusting Model Parameters in the Properties.py
 
-```python
-BATCH_SIZE = 1
-NUM_WORKERS = 24
-EPOCHS = 10
-LR = 0.00008  # Learning Rate
-WD = 0  # Weight Decay
-GAMMA = 0.9
-SAVE_MODEL = True
-IMAGE_SIZE = 228
-TRAIN = True  # Change this to False to analyse model(s) by some metrics
-NUM_CLASSES = 5  # Amount of classes to classify in the model according to the dataset
+## Hyperparameters
+Models' important parameters can be adjusted from the terminal or Main.py file as default.
+
+```
+Options:
+  --name TEXT            Name of the model. (cnn8, resnet18 or densenet121)
+  --batch_size INTEGER   Batch Size
+  --num_workers INTEGER  Num Workers
+  --epochs INTEGER       Epochs
+  --lr FLOAT             Learning Rate
+  --wd INTEGER           Weight Decay
+  --gamma FLOAT          Gamma
+  --save_model BOOLEAN   Save Model at the end
+  --im_size INTEGER      Image Size
 ```
 
 ## Training
 
-To train the model, run this command:
+To train the model, run this command or with the desired parameters as "--name":
 
 ```train
 python Main.py --name <modelname>
 ```
-*Currently a few models are supported(cnn8, resnet18 and densenet121)*
+This will create a Results folder, and model will be saved by the name value in the Folder.
+<br />*Currently a few models are supported(cnn8, resnet18 and densenet121)*
 
 ## Evaluation
 
-To evaluate model with Lung_Data dataset, ".pt" file should be as in the example:
+To evaluate model with lung dataset, ".pt" file should be as in the example:
 
 ```results
 Results
@@ -104,6 +96,7 @@ If the format is as above, then the code below will work successfully.
 ```eval
 python Evaluation.py --name <modelname>
 ```
+This will save some metric result images in the Results folder.
 
 ## Results
 
@@ -124,5 +117,7 @@ Our models achieve the following performances on :
 ```
 
 ## Contributing
+This project is prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
+Thank you to my professor Mustafa Umit Oner for all the achievements.
 
 Dataset and idea is borrowed from [Deepslide](https://github.com/BMIRDS/deepslide), Thanks for their excellent work!

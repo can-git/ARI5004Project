@@ -8,7 +8,6 @@ __pycache__/
 # C extensions
 *.so
 *.xml
-Results/
 *.pt
 
 # Distribution / packaging
@@ -29,6 +28,8 @@ var/
 .installed.cfg
 *.egg
 Data/
+Visualization
+Results
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -187,4 +188,3 @@ fabric.properties
 
 # idea folder, uncomment if you don't need it
 # .idea
-/Results/

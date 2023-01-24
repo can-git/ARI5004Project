@@ -11,11 +11,12 @@ from Preprocess import Preprocess
 
 
 class Evaluation:
-    def __init__(self, model, test_data, model_name):
-
+    def __init__(self, model, test_data, model_name, im_size, visualization):
+        self.im_size = im_size
         self.y_pred, self.y_prob, self.y = self.get_predictions(model, test_data)
 
-        metrics = um.Utils_Metrics(self.y_pred, self.y_prob, self.y)
+        metrics = um.Utils_Metrics()
+        metrics.set(self.y_pred, self.y_prob, self.y)
         plots = up.Utils_Plot(model_name)
 
         self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
@@ -23,7 +24,14 @@ class Evaluation:
 
         plots.plotConfusionMatrix(metrics.get_confusion())
         plots.plotAuRoc(metrics.get_auroc())
-        self.data_visualization()
+
+        if visualization:
+            self.data_visualization()
+            preds = []
+            for model in os.listdir("Results/"):
+                pred, _, y = self.get_predictions(torch.jit.load("Results/{}/{}_model.pt".format(model, model)), test_data)
+                preds.append(pred)
+            plots.plotCappa(metrics.get_cappa(preds))
 
     def save_to_csv(self, mn, acc, pr, f1, rc, kap):
 
@@ -51,7 +59,7 @@ class Evaluation:
             plots.plotClassesDistribution(df)
 
     def get_predictions(self, model, test_data):
-        test = ImageDataset(test_data)
+        test = ImageDataset(test_data, self.im_size)
 
         test_dataloader = torch.utils.data.DataLoader(test, batch_size=1)
 
@@ -59,7 +67,7 @@ class Evaluation:
         device = torch.device("cuda" if use_cuda else "cpu")
 
         if use_cuda:
-            model = model.cuda()
+            model = model.to(device)
 
         predicted_values = []
         probabilities = []
@@ -80,10 +88,12 @@ class Evaluation:
 
 @click.command()
 @click.option('--name', default="", help='Name of the model.')
-def main(name):
+@click.option('--im_size', default=228, help='Image Size')
+@click.option('--visualization', default=True, help='Export Data Visuals')
+def main(name, im_size, visualization):
     preprocess = Preprocess()
     df_test = preprocess.getItem("test")
-    Evaluation(torch.jit.load("Results/{}/{}_model.pt".format(name, name)), df_test, name)
+    Evaluation(torch.jit.load("Results/{}/{}_model.pt".format(name, name)), df_test, name, im_size, visualization)
 
 
 if __name__=="__main__":

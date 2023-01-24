@@ -52,8 +52,6 @@ class Preprocess:
             return df_train, df_val
         elif side == "test":
             return df_test
-        else:
-            return df_train, df_val, df_test
 
     def move_images(self, df):
         for i, row in enumerate(df.values):

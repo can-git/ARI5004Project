@@ -8,11 +8,11 @@ import numpy as np
 
 
 class ImageDataset(Dataset):
-    def __init__(self, dataframe):
+    def __init__(self, dataframe, im_size):
         self.dataframe = dataframe
         self.transform = transforms.Compose([
             # transforms.Grayscale(),
-            transforms.Resize((p.IMAGE_SIZE, p.IMAGE_SIZE)),
+            transforms.Resize((im_size, im_size)),
             # transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
             # transforms.RandomRotation(degrees=90),
             # transforms.RandomHorizontalFlip(),
