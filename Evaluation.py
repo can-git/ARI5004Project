@@ -19,9 +19,11 @@ class Evaluation:
         metrics = um.Utils_Metrics()
         metrics.set(self.y_pred, self.y_prob, self.y)
         plots = up.Utils_Plot(model_name)
+        plots.plotAuRoc(metrics.get_auroc())
+        plots.plotConfusionMatrix(metrics.get_confusion())
 
-        self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
-                             metrics.get_recall())
+        # self.save_to_csv(model_name, metrics.get_acc(), metrics.get_precision(), metrics.get_f1(),
+        #                      metrics.get_recall())
 
     def save_to_csv(self, mn, acc, pr, f1, rc):
 

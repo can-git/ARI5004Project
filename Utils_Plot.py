@@ -21,13 +21,6 @@ class Utils_Plot:
         plt.close()
         print("Results/{}/ConfusionMatrix saved".format(self.plot_title))
 
-    def plotErrorBar(self, p):
-        plt.barh(y=range(len(p)), width=p)
-        # plt.yticks(range(len(p)), target_labels)
-        plt.xlabel('Precision Score')
-        plt.ylabel('Class')
-        plt.show()
-
     def plotAuRoc(self, scores):
         for i, (score, fpr, tpr) in enumerate(scores):
             plt.plot(fpr, tpr, label=f'Class {i}, AUC = {score:0.5f}')
