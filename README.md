@@ -4,7 +4,7 @@
 This repository contains the code for the project article prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
 
 NeurIPS styled report: [Deep Learning Networks Comparison of Histologic Patterns on Resected Lung
-Adenocarcinoma Slides](https://drive.google.com/file/d/1fs-4PK2iSX_sbzeuIlnXxy6YzBW0D-fZ/view?usp=sharing).
+Adenocarcinoma Slides](https://drive.google.com/file/d/1aE8Vi3HnBVBwzreEH-uyyYbEczZrkOeL/view?usp=sharing).
 
 <p align="center">
 <img src="etc/lung-cancer.jpg" height=350>
