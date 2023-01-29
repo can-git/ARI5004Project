@@ -110,6 +110,9 @@ Our models achieve the following performances on :
 | [DenseNet](https://drive.google.com/file/d/1xIVPKVo8dyuEyHEAa04DCTCnOj-mcZ_R/view?usp=sharing) | 0.94%    | 0.94%     | 0.94%  | 0.94% |
 
 ## Problems
+<p>
+<img src="etc/error.png" height=50>
+</p>
 There is a Data Leakage in the proposed dataset! :smiling_face_with_tear: Therefore all the results are useless. (There are 5 WSIs in total and 1 WSI is used for each of the classes and the train and test dataset are split from the same source.)
 
 ## Contributing
