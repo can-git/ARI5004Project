@@ -109,6 +109,8 @@ Our models achieve the following performances on :
 | [ResNet](https://drive.google.com/file/d/1sWPm_AEl2mOrgICo2xV8whX_ht7wYYn3/view?usp=sharing)   | 0.92%    | 0.93%     | 0.92%  | 0.92% |
 | [DenseNet](https://drive.google.com/file/d/1xIVPKVo8dyuEyHEAa04DCTCnOj-mcZ_R/view?usp=sharing) | 0.94%    | 0.94%     | 0.94%  | 0.94% |
 
+## Problems
+There is a Data Leakage in the proposed dataset! :smiling_face_with_tear: Therefore all the results are useless. (There are 5 WSIs in total and 1 WSI is used for each of the classes and the train and test dataset are split from the same source.)
 
 ## Contributing
 This project is prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
