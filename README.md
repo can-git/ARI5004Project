@@ -1,8 +1,9 @@
 
 # Deep Learning Networks Comparison of Histologic Patterns on Resected Lung Adenocarcinoma Slides
 
+! Before using this project, please read the problems section first.
+
 This repository contains the code for the project article prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
-! Before using the project, please read the problems section first.
 
 NeurIPS styled report: [Deep Learning Networks Comparison of Histologic Patterns on Resected Lung
 Adenocarcinoma Slides](https://drive.google.com/file/d/1aE8Vi3HnBVBwzreEH-uyyYbEczZrkOeL/view?usp=sharing).
