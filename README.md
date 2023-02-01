@@ -1,7 +1,7 @@
 
 # Deep Learning Networks Comparison of Histologic Patterns on Resected Lung Adenocarcinoma Slides
 
-! Before using this project, please read the problems section first.
+:exclamation: Before using this project, please read the problems section first.
 
 This repository contains the code for the project article prepared for the ARI5004 (Deep Learning) course at Bahçeşehir University. 
 
@@ -111,10 +111,7 @@ Our models achieve the following performances on :
 | [ResNet](https://drive.google.com/file/d/1sWPm_AEl2mOrgICo2xV8whX_ht7wYYn3/view?usp=sharing)   | 0.92%    | 0.93%     | 0.92%  | 0.92% |
 | [DenseNet](https://drive.google.com/file/d/1xIVPKVo8dyuEyHEAa04DCTCnOj-mcZ_R/view?usp=sharing) | 0.94%    | 0.94%     | 0.94%  | 0.94% |
 
-## Problems
-<p>
-<img src="etc/red_error.png" height=50>
-</p>
+## Problems :exclamation:
 There is a Data Leakage in the proposed dataset! :smiling_face_with_tear: Therefore all the results are useless.
 
 ## Contributing
